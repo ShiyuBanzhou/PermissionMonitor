@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:padding="16dp">
 
     <ImageView
@@ -12,11 +12,11 @@
         android:contentDescription="App Icon" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_weight="1"
-        android:layout_marginStart="16dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_app_name"
@@ -31,8 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="滥用的权限列表"
-            android:textSize="14sp"
-            android:textColor="#FF0000" />
+            android:textColor="#FF0000"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -40,8 +40,17 @@
         android:id="@+id/btn_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_info"
-    android:contentDescription="Permission Info"
-    android:background="?attr/selectableItemBackgroundBorderless" />
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Permission Info"
+        android:src="@drawable/ic_info" />
+
+    <!-- 添加修改权限按钮 -->
+    <Button
+        android:id="@+id/btn_permission_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="修改权限"
+        android:layout_marginStart="16dp"
+        android:layout_gravity="center_vertical" />
 
 </LinearLayout>

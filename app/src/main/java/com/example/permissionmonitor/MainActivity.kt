@@ -61,25 +61,19 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = PermissionAdapter(abusedPermissionsList)
 
         btnRefresh.setOnClickListener {
-            checkPermissions()
+            checkPermissions()  // 用户点击刷新按钮时，检查权限
         }
 
-        // 注册本地广播接收器
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            refreshReceiver,
-            IntentFilter("com.example.permissionmonitor.ACTION_REFRESH")
-        )
-
-        // 检查是否有权限，如果没有则请求
+        // 检查是否有使用情况访问权限
         if (!hasUsageStatsPermission()) {
             showUsageStatsPermissionDialog()
-        } else {
-            checkPermissions()
         }
 
         // 检查并请求通知权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
@@ -104,12 +98,14 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            if ((grantResults.isNotEmpty() && grantResults[0]
+                        == PackageManager.PERMISSION_GRANTED)) {
                 // 权限已授予
                 Toast.makeText(this, "通知权限已授予", Toast.LENGTH_SHORT).show()
             } else {
                 // 权限被拒绝
-                Toast.makeText(this, "通知权限被拒绝，无法发送通知", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "通知权限被拒绝，无法发送通知",
+                    Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -135,7 +131,8 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton("取消") { dialog, _ ->
                 dialog.dismiss()
-                Toast.makeText(this, "权限未授予，应用无法正常工作。", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "权限未授予，应用无法正常工作。",
+                    Toast.LENGTH_LONG).show()
             }
             .show()
     }
@@ -154,24 +151,21 @@ class MainActivity : AppCompatActivity() {
                 if (permissions.isNotEmpty()) {
                     val appName = packageManager.getApplicationLabel(app).toString()
                     val appIcon = packageManager.getApplicationIcon(app)
-                    abusedPermissionsList.add(PermissionUsage(appName, appIcon, permissions))
+                    val packageName = app.packageName // 获取应用的包名
+                    // 传递 packageName 到 PermissionUsage 构造函数
+                    abusedPermissionsList.add(PermissionUsage(appName, appIcon, permissions, packageName))
                 }
             }
 
             recyclerView.adapter?.notifyDataSetChanged()
-
-            if (abusedPermissionsList.isNotEmpty()) {
-                abusedPermissionsList.forEach { usage ->
-                    triggerPermissionAlert(usage)
-                }
-            }
         }
     }
 
     private fun getAppPermissions(packageName: String): List<String> {
         val abusedPermissions = mutableListOf<String>()
         try {
-            val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+            val packageInfo = packageManager.getPackageInfo(packageName,
+                PackageManager.GET_PERMISSIONS)
             val requestedPermissions = packageInfo.requestedPermissions
             if (requestedPermissions != null) {
                 for (permission in requestedPermissions) {
@@ -267,8 +261,10 @@ class MainActivity : AppCompatActivity() {
                 checkedPermissions[which] = isChecked
             }
             .setPositiveButton("应用选择") { _, _ ->
-                val enabledPermissions = permissions.filterIndexed { index, _ -> checkedPermissions[index] }
-                val disabledPermissions = permissions.filterIndexed { index, _ -> !checkedPermissions[index] }
+                val enabledPermissions
+                        = permissions.filterIndexed { index, _ -> checkedPermissions[index] }
+                val disabledPermissions
+                        = permissions.filterIndexed { index, _ -> !checkedPermissions[index] }
 
                 // 更新权限表
                 PermissionManager.updatePermissionWhitelist(permissionUsage.appName, enabledPermissions)
