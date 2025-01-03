@@ -28,6 +28,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.net.Uri
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -166,7 +168,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun getAppPermissions(packageName: String): List<String> {
         val abusedPermissions = mutableListOf<String>()
         try {
@@ -293,13 +294,26 @@ class MainActivity : AppCompatActivity() {
     private fun closeApp(packageName: String) {
         try {
             val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
-            activityManager.killBackgroundProcesses(packageName)
-            Toast.makeText(this, "$packageName 已被关闭", Toast.LENGTH_SHORT).show()
+
+            // 对于 Android 10 及以上版本的设备，无法直接关闭后台应用
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                // 适用于低于 Android 10 的设备
+                activityManager.killBackgroundProcesses(packageName)
+                Toast.makeText(this, "$packageName 已被关闭", Toast.LENGTH_SHORT).show()
+            } else {
+                // 提示用户手动关闭应用或打开应用设置
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.parse("package:$packageName")
+                }
+                startActivity(intent)
+                Toast.makeText(this, "请手动关闭 $packageName 或禁用权限", Toast.LENGTH_LONG).show()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "无法关闭 $packageName", Toast.LENGTH_LONG).show()
         }
     }
+
 
     private fun getPermissionDescription(permission: String): String {
         return when (permission) {
