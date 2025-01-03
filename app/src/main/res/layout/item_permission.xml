@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/img_app_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="App Icon" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp">
+
+        <TextView
+            android:id="@+id/tv_app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="应用名称"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_permissions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="滥用的权限列表"
+            android:textSize="14sp"
+            android:textColor="#FF0000" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btn_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_info"
+    android:contentDescription="Permission Info"
+    android:background="?attr/selectableItemBackgroundBorderless" />
+
+</LinearLayout>
